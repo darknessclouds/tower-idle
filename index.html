@@ -2,36 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tower Idle Game</title>
+  <title>Advanced Tower Idle Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       background: #1e1e2f;
       color: #fff;
-      margin: 0;
       padding: 20px;
     }
     .tower {
       margin: 20px auto;
-      max-width: 200px;
+      max-width: 220px;
     }
     .floor {
       width: 100%;
       height: 40px;
-      background: #4caf50;
       margin: 2px 0;
       border: 2px solid #222;
+      color: #000;
     }
+    .basic { background: #4caf50; }
+    .office { background: #2196f3; }
+    .restaurant { background: #ff9800; }
     button {
-      padding: 10px 20px;
-      margin: 10px;
+      padding: 10px 16px;
+      margin: 6px;
       background: #333;
       color: #fff;
       border: none;
       cursor: pointer;
-      font-size: 16px;
-      border-radius: 4px;
+      border-radius: 5px;
     }
     button:hover {
       background: #555;
@@ -39,53 +40,71 @@
   </style>
 </head>
 <body>
-  <h1>🏗️ Tower Idle Game</h1>
-  <p>💰 Money: $<span id="money">0</span></p>
-  <button onclick="buildFloor()">Build Floor ($10)</button>
-  <button onclick="upgradeFloors()">Upgrade Floors ($50)</button>
+  <h1>🏢 Advanced Tower Idle Game</h1>
+  <p>💰 Money: $<span id="money">100</span></p>
+
+  <div>
+    <button onclick="buildFloor('basic')">Build Basic ($10)</button>
+    <button onclick="buildFloor('office')">Build Office ($25)</button>
+    <button onclick="buildFloor('restaurant')">Build Restaurant ($50)</button>
+  </div>
+  <div>
+    <button onclick="upgrade('basic')">Upgrade Basic ($40)</button>
+    <button onclick="upgrade('office')">Upgrade Office ($80)</button>
+    <button onclick="upgrade('restaurant')">Upgrade Restaurant ($120)</button>
+  </div>
 
   <div class="tower" id="tower"></div>
 
   <script>
-    // Start with $20 so user can build floors right away
-    let money = 20;
+    let money = 100;
     let floors = [];
-    let floorIncome = 1;
+
+    const floorTypes = {
+      basic: { income: 1, cost: 10, upgradeCost: 40, upgradeLevel: 1, color: 'basic' },
+      office: { income: 5, cost: 25, upgradeCost: 80, upgradeLevel: 1, color: 'office' },
+      restaurant: { income: 10, cost: 50, upgradeCost: 120, upgradeLevel: 1, color: 'restaurant' }
+    };
 
     function updateMoneyDisplay() {
-      document.getElementById('money').textContent = money;
+      document.getElementById('money').textContent = Math.floor(money);
     }
 
-    function buildFloor() {
-      if (money >= 10) {
-        money -= 10;
+    function buildFloor(type) {
+      const ft = floorTypes[type];
+      if (money >= ft.cost) {
+        money -= ft.cost;
         const floor = document.createElement('div');
-        floor.classList.add('floor');
+        floor.classList.add('floor', ft.color);
+        floor.dataset.type = type;
         document.getElementById('tower').prepend(floor);
-        floors.push(floor);
+        floors.push({ type });
         updateMoneyDisplay();
       } else {
-        alert('Not enough money to build a floor!');
+        alert('Not enough money to build this floor.');
       }
     }
 
-    function upgradeFloors() {
-      if (money >= 50) {
-        money -= 50;
-        floorIncome += 1;
+    function upgrade(type) {
+      const ft = floorTypes[type];
+      if (money >= ft.upgradeCost) {
+        money -= ft.upgradeCost;
+        ft.upgradeLevel++;
         updateMoneyDisplay();
+        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} upgraded to level ${ft.upgradeLevel}`);
       } else {
-        alert('Not enough money to upgrade floors!');
+        alert('Not enough money to upgrade.');
       }
     }
 
-    // Passive income every second
     setInterval(() => {
-      money += floors.length * floorIncome;
+      floors.forEach(f => {
+        const ft = floorTypes[f.type];
+        money += ft.income * ft.upgradeLevel;
+      });
       updateMoneyDisplay();
     }, 1000);
 
-    // Update money display initially
     updateMoneyDisplay();
   </script>
 </body>
