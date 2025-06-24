@@ -47,7 +47,8 @@
   <div class="tower" id="tower"></div>
 
   <script>
-    let money = 0;
+    // Start with $20 so user can build floors right away
+    let money = 20;
     let floors = [];
     let floorIncome = 1;
 
@@ -64,4 +65,28 @@
         floors.push(floor);
         updateMoneyDisplay();
       } else {
-        alert('Not enough
+        alert('Not enough money to build a floor!');
+      }
+    }
+
+    function upgradeFloors() {
+      if (money >= 50) {
+        money -= 50;
+        floorIncome += 1;
+        updateMoneyDisplay();
+      } else {
+        alert('Not enough money to upgrade floors!');
+      }
+    }
+
+    // Passive income every second
+    setInterval(() => {
+      money += floors.length * floorIncome;
+      updateMoneyDisplay();
+    }, 1000);
+
+    // Update money display initially
+    updateMoneyDisplay();
+  </script>
+</body>
+</html>
