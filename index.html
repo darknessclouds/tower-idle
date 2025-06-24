@@ -3,13 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <title>Tower Idle Game</title>
-  <style> /* CSS styles here */ </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #1e1e2f;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    .tower {
+      margin: 20px auto;
+      max-width: 200px;
+    }
+    .floor {
+      width: 100%;
+      height: 40px;
+      background: #4caf50;
+      margin: 2px 0;
+      border: 2px solid #222;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #555;
+    }
+  </style>
 </head>
 <body>
   <h1>🏗️ Tower Idle Game</h1>
-  ...
+  <p>💰 Money: $<span id="money">0</span></p>
+  <button onclick="buildFloor()">Build Floor ($10)</button>
+  <button onclick="upgradeFloors()">Upgrade Floors ($50)</button>
+
+  <div class="tower" id="tower"></div>
+
   <script>
-    // JavaScript code here
-  </script>
-</body>
-</html>
+    let money = 0;
+    let floors = [];
+    let floorIncome = 1;
+
+    function updateMoneyDisplay() {
+      document.getElementById('money').textContent = money;
+    }
+
+    function buildFloor() {
+      if (money >= 10) {
+        money -= 10;
+        const floor = document.createElement('div');
+        floor.classList.add('floor');
+        document.getElementById('tower').prepend(floor);
+        floors.push(floor);
+        updateMoneyDisplay();
+      } else {
+        alert('Not enough
